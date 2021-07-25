@@ -1,10 +1,10 @@
-table_range = list(range(1, 10))
+board_range = list(range(1, 10))    # [1,2,3,4,5,6,7,8,9]
 X_start = True
-table = []
-table_space = 0
-def start():
-    global table
-    table = [" ", " ", " ",
+board = []
+board_space = 0
+def setup():
+    global board
+    board = [" ", " ", " ",
              " ", " ", " ",
              " ", " ", " ", ]
     print("Please Input number between 1 - 9 \n")
@@ -16,19 +16,23 @@ def start():
     print("-- game start -- \n")
 
 def User_input(X_start):
-    global table_space
-    if X_start:
-        Input = eval(input("X turn input : "))
-    else:
-        Input = eval(input("O turn input : "))
-    if Input in table_range:
-        if table[Input - 1] == " ":
+    global board_space
+    if board_space == 9:
+        return
+    try:
+        if X_start:
+            Input = int(input("X turn input : "))
+        else:
+            Input = int(input("O turn input : "))
+    except:
+        Input = 0
+    if Input in board_range:
+        if board[Input - 1] == " ":
             if X_start:
-                table[Input - 1] = "x"
+                board[Input - 1] = "x"
             else:
-                table[Input - 1] = "o"
-            table_space += 1
-            X_start = not X_start
+                board[Input - 1] = "o"
+            board_space += 1
             return
         else:
             print("Can not put the mark on same tile \n")
@@ -37,43 +41,43 @@ def User_input(X_start):
     User_input(X_start)
 
 def Display():
-    print(f" {table[0]} | {table[1]} | {table[2]}")
+    print(f" {board[0]} | {board[1]} | {board[2]}")
     print(f"-----------")
-    print(f" {table[3]} | {table[4]} | {table[5]}")
+    print(f" {board[3]} | {board[4]} | {board[5]}")
     print(f"-----------")
-    print(f" {table[6]} | {table[7]} | {table[8]} \n")
+    print(f" {board[6]} | {board[7]} | {board[8]} \n")
 
-def check(table):
+def check_wining(board):
     # แนวนอน
-    if table[0] == table[1] == table[2] != " ":
-        return False
-    if table[3] == table[4] == table[5] != " ":
-        return False
-    if table[6] == table[7] == table[8] != " ":
-        return False
+    if board[0] == board[1] == board[2] != " ":
+        return False, False
+    elif board[3] == board[4] == board[5] != " ":
+        return False, False
+    elif board[6] == board[7] == board[8] != " ":
+        return False, False
     # แนวตั้ง
-    if table[0] == table[3] == table[6] != " ":
-        return False
-    if table[1] == table[4] == table[7] != " ":
-        return False
-    if table[2] == table[5] == table[8] != " ":
-        return False
+    elif board[0] == board[3] == board[6] != " ":
+        return False, False
+    elif board[1] == board[4] == board[7] != " ":
+        return False, False
+    elif board[2] == board[5] == board[8] != " ":
+        return False, False
     # แนวทแยง
-    if table[0] == table[4] == table[8] != " ":
-        return False
-    if table[2] == table[4] == table[6] != " ":
-        return False
-    if table_space == 9:
-        return False
-    return True
+    elif board[0] == board[4] == board[8] != " ":
+        return False, False
+    elif board[2] == board[4] == board[6] != " ":
+        return False, False
+    if board_space >= 9:
+        return False, True
+    return True, False
 if __name__ == '__main__':
-    start()
+    setup()
     Display()
-    while check(table):
+    while check_wining(board)[0]:
         User_input(X_start)
         X_start = not X_start
         Display()
-    if table_space == 9:
+    if check_wining(board)[1]:
         print("Draw")
     elif not X_start:
         print("Winner is x")
